@@ -70,12 +70,13 @@ public class Base {
         }
     }
 
-    public void GoTowardsBearing(double bearing, float margin){
-        if(bearing > -margin && bearing < margin){
+    public void GoTowardsBearing(double force, float margin){
+        if(force > -margin && force < margin){
             Straight(1);
         }
+
         else{
-            if(bearing < 0){
+            if(force > 0){
                 Strafe(1f);
             }
             else{

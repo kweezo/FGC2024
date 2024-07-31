@@ -70,7 +70,7 @@ public class Camera{
         tagProcessorBuilder.setDrawAxes(true);
         tagProcessorBuilder.setDrawCubeProjection(true);
         tagProcessorBuilder.setNumThreads(8);
-        tagProcessorBuilder.setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES);
+        tagProcessorBuilder.setOutputUnits(DistanceUnit.CM, AngleUnit.RADIANS);
 
         tagProcessorBuilder.build();
 

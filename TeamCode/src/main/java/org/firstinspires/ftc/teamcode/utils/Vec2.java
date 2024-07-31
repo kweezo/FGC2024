@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Utils;
+package org.firstinspires.ftc.teamcode.utils;
 
 public class Vec2 {
     double x;
@@ -19,8 +19,16 @@ public class Vec2 {
         y = points[1];
     }
 
-    void Multiply(Mat2 mat){
+    public void Multiply(Mat2 mat){
         x = x * mat.Get(0, 0) - y * mat.Get(0, 1);
         y = x * mat.Get(0, 1) + y * mat.Get(1, 1);
+    }
+
+    public double x(){
+        return x;
+    }
+
+    public double y(){
+        return y;
     }
 }

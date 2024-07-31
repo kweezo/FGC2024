@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.utils.Mat2;
+import org.firstinspires.ftc.teamcode.utils.MiniPID;
+import org.firstinspires.ftc.teamcode.utils.Vec2;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
@@ -29,8 +32,13 @@ public class Main extends LinearOpMode{
             base.Update();
 
             if(gamepad1.square && tag != null){
-                telemetry.addLine(Double.toString( tag.ftcPose.bearing));
-                base.GoTowardsBearing(tag.ftcPose.bearing, 2);
+                //telemetry.addData("P1 Y", p1.y());
+                //telemetry.addData("P2 Y", p2.y());
+                telemetry.addData("ROLL", tag.ftcPose.roll);
+
+                //MiniPID pid = new MiniPID()
+
+                //base.GoTowardsBearing(force, 3);
             }
 
             telemetry.update();
