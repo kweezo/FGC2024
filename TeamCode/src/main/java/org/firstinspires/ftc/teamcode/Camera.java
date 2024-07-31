@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import android.util.Size;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -15,20 +19,25 @@ import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
 
-@TeleOp(name = "TestTest")
-public class CamTest1 extends LinearOpMode {
+public class Camera{
 
     private AprilTagProcessor tagProcessor;
     private VisionPortal visionPortal;
     private TfodProcessor tfodProcessor;
-    int camFOV = 60; //hardcoded FOV
+
+    private int camFOV = 60; //hardcoded FOV
+    private int camResX = 1280;
+    private int camResY = 720;
+
+    private HardwareMap hardwareMap;
+    private Telemetry telemetry;
 
     private void InitCam() {
         VisionPortal.Builder visionPortalBuilder = new VisionPortal.Builder();
 
         visionPortalBuilder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
 
-        visionPortalBuilder.setCameraResolution(new Size(640, 480));
+        visionPortalBuilder.setCameraResolution(new Size(camResX, camResY));
         visionPortalBuilder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
         visionPortalBuilder.enableLiveView(true);
         visionPortalBuilder.setAutoStopLiveView(true);
@@ -66,27 +75,33 @@ public class CamTest1 extends LinearOpMode {
         tagProcessor = tagProcessorBuilder.build();
     }
 
-    @Override
-    public void runOpMode() {
+    public Camera(int camResX, int camResY, HardwareMap hardwareMap, Telemetry telemetry) {
+        this.camResX = camResX;
+        this.camResY = camResY;
+        this.hardwareMap = hardwareMap;
+        this.telemetry = telemetry;
+
         InitTFProcessor();
         InitTagProcessor();
         InitCam();
+    }
 
-        while (!isStopRequested()) {
-            List<AprilTagDetection> tagDetections;
+    public void Update() {
+        List<AprilTagDetection> tagDetections;
 
-            tagDetections = tagProcessor.getDetections();
+        tagDetections = tagProcessor.getDetections();
 
-            telemetry.addLine("DEBUG DATA");
+        telemetry.addLine("DEBUG DATA");
 
-            for (AprilTagDetection tag : tagDetections) {
-                telemetry.addData(
-                        String.valueOf(tag.id),
-                        "(" + tag.center.x + "," + tag.center.y + ")"
-                );
-            }
-            telemetry.update();
+        for (AprilTagDetection tag : tagDetections) {
+            double heading = ((tag.center.x / camResX) * camFOV) - camFOV / 2.0f;
+
+            telemetry.addData(
+                    String.valueOf(tag.id),
+                    "TAG CENTRE: (" + (int) tag.center.x + "," + (int) tag.center.y + ")\n" +
+                            "HEADING: " + heading
+            );
         }
-
     }
 }
+
