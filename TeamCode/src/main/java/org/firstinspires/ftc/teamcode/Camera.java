@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagLibrary;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
@@ -70,9 +71,12 @@ public class Camera{
         tagProcessorBuilder.setDrawCubeProjection(true);
         tagProcessorBuilder.setNumThreads(8);
         tagProcessorBuilder.setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES);
+
         tagProcessorBuilder.build();
 
         tagProcessor = tagProcessorBuilder.build();
+
+
     }
 
     public Camera(int camResX, int camResY, HardwareMap hardwareMap, Telemetry telemetry) {
@@ -86,7 +90,7 @@ public class Camera{
         InitCam();
     }
 
-    public void Update() {
+    public AprilTagDetection Update() {
         List<AprilTagDetection> tagDetections;
 
         tagDetections = tagProcessor.getDetections();
@@ -94,14 +98,18 @@ public class Camera{
         telemetry.addLine("DEBUG DATA");
 
         for (AprilTagDetection tag : tagDetections) {
-            double heading = ((tag.center.x / camResX) * camFOV) - camFOV / 2.0f;
 
             telemetry.addData(
                     String.valueOf(tag.id),
                     "TAG CENTRE: (" + (int) tag.center.x + "," + (int) tag.center.y + ")\n" +
-                            "HEADING: " + heading
+                            "HEADING: " + tag.ftcPose.bearing + "\n" +
+                            "DIST: " + tag.ftcPose.range
             );
+
+            return tag;
         }
+
+        return null;
     }
 }
 
