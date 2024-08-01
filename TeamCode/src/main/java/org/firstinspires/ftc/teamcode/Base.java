@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import java.sql.Array;
-
 public class Base {
     DcMotor[] motors = new DcMotor[4];
     Gamepad gamepad;
@@ -45,8 +43,8 @@ public class Base {
     private void TurnClockwise(float power){
 
         motors[0].setPower(power);
-        motors[3].setPower(power);
-        motors[1].setPower(-power);
+        motors[1].setPower(power);
+        motors[3].setPower(-power);
         motors[2].setPower(-power);
     }
 
@@ -60,7 +58,7 @@ public class Base {
         ResetMotors();
 
         Strafe(gamepad.left_stick_x);
-        Straight(gamepad.right_stick_y);
+        Straight(-gamepad.right_stick_y);
 
         if(gamepad.dpad_up){
             TurnClockwise(1);
@@ -70,17 +68,17 @@ public class Base {
         }
     }
 
-    public void GoTowardsBearing(double force, float margin){
+    public void ApplyPID(double force, double margin){
         if(force > -margin && force < margin){
             Straight(1);
         }
 
         else{
-            if(force > 0){
-                Strafe(1f);
+            if(force < 0){
+                Strafe((float)force);
             }
             else{
-                Strafe(-1f);
+                Strafe((float)force);
             }
         }
     }

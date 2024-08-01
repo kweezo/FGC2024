@@ -56,8 +56,8 @@ public class Camera{
         tfodProcessorBuilder.setTrackerMaxOverlap(0.2f);
         tfodProcessorBuilder.setTrackerMinSize(16);
         tfodProcessorBuilder.setTrackerMinCorrelation(0.005f);
-        tfodProcessorBuilder.setNumExecutorThreads(8);
-        tfodProcessorBuilder.setNumDetectorThreads(8);
+        tfodProcessorBuilder.setNumExecutorThreads(1);
+        tfodProcessorBuilder.setNumDetectorThreads(1);
 
         tfodProcessor = tfodProcessorBuilder.build();
     }
@@ -69,7 +69,7 @@ public class Camera{
         tagProcessorBuilder.setDrawTagOutline(true);
         tagProcessorBuilder.setDrawAxes(true);
         tagProcessorBuilder.setDrawCubeProjection(true);
-        tagProcessorBuilder.setNumThreads(8);
+        tagProcessorBuilder.setNumThreads(1);
         tagProcessorBuilder.setOutputUnits(DistanceUnit.CM, AngleUnit.RADIANS);
 
         tagProcessorBuilder.build();
@@ -90,26 +90,15 @@ public class Camera{
         InitCam();
     }
 
-    public AprilTagDetection Update() {
+    public AprilTagDetection[] Update() {
         List<AprilTagDetection> tagDetections;
 
         tagDetections = tagProcessor.getDetections();
+        AprilTagDetection[] tagDetectionsArr = new AprilTagDetection[tagDetections.size()];
+        tagDetections.toArray(tagDetectionsArr);
 
-        telemetry.addLine("DEBUG DATA");
+        return tagDetectionsArr;
 
-        for (AprilTagDetection tag : tagDetections) {
-
-            telemetry.addData(
-                    String.valueOf(tag.id),
-                    "TAG CENTRE: (" + (int) tag.center.x + "," + (int) tag.center.y + ")\n" +
-                            "HEADING: " + tag.ftcPose.bearing + "\n" +
-                            "DIST: " + tag.ftcPose.range
-            );
-
-            return tag;
-        }
-
-        return null;
     }
 }
 
